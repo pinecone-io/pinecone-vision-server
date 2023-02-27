@@ -23,7 +23,7 @@ const saveEmbedding = async ({ id, values, metadata, namespace }) => {
     namespace,
   };
   try {
-    const response = await index.upsert(upsertRequest);
+    const response = await index.upsert({ upsertRequest });
     return response?.upsertedCount > 0
       ? {
           message: "training",
@@ -32,7 +32,7 @@ const saveEmbedding = async ({ id, values, metadata, namespace }) => {
           message: "failed training",
         };
   } catch (e) {
-    console.log("failed", e.response);
+    console.log("failed", e);
   }
 };
 
@@ -45,7 +45,7 @@ const queryEmbedding = async ({ values, namespace }) => {
     namespace,
   };
   try {
-    const response = await index.query(queryRequest);
+    const response = await index.query({ queryRequest });
     const match = response.matches[0];
     const metadata = match?.metadata;
     const score = match?.score;
@@ -54,16 +54,19 @@ const queryEmbedding = async ({ values, namespace }) => {
       confidence: score,
     };
   } catch (e) {
-    console.log("failed", e.response);
+    console.log("failed", e);
   }
 };
 
 const deleteNamespace = async ({ namespace }) => {
   const index = pineconeClient.Index(indexName);
   try {
-    await index.delete1([], true, namespace);
+    await index.delete1({
+      deleteAll: true,
+      namespace,
+    });
   } catch (e) {
-    console.log("failed", e.response);
+    console.log("failed", e);
   }
 };
 
