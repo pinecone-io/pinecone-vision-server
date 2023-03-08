@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 const server = http.createServer(app);
 
-app.get("/health", async (_, res) => {
+app.get("/api/health", async (_, res) => {
   res.send("ok");
 });
 
